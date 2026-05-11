@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router"
-import Home from "./pages/home"
+import Calculation from "./pages/calculation"
 
 const App = () => {
 	return (
 		<Routes>
-			<Route element={<Home />} path='/' />
+			<Route element={<Calculation />} path='/' />
 		</Routes>
 	)
 }

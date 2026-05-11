@@ -3,7 +3,7 @@ import Card from "@/components/card"
 import Input from "@/components/input"
 import Header from "@/components/layout/header"
 import Typography from "@/components/typography"
-
+import banner from "@/assets/Banner.png"
 const Home = () => {
 	return (
 		<>
@@ -30,6 +30,7 @@ const Home = () => {
 			</Typography>
 			<Card className='p-4'>dfasdsa</Card>
 			<Header />
+			<img src={banner}/>
 		</>
 	)
 }
