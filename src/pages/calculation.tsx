@@ -1,4 +1,5 @@
 import ellipse from "@/assets/ellipse.svg"
+import handhsake from "@/assets/handshake.png"
 import Button from "@/components/button"
 import Card from "@/components/card"
 import { DropdownMenu } from "@/components/dropdown-menu"
@@ -7,11 +8,11 @@ import Input from "@/components/input"
 import Typography from "@/components/typography"
 import { ArrowRight, ChevronRight, X } from "lucide-react"
 import { useState } from "react"
-import handhsake from "@/assets/handshake.png"
+
 const Calculation = () => {
 	const [showModalWhereTo, setShowModalWhereTo] = useState(false)
 	return (
-		<div className='pt-8 pb-4 pr-4 pl-4 flex flex-col gap-2'>
+		<div className='flex flex-col gap-2'>
 			<Card className='p-6 flex flex-col gap-6' rounded='sm' as='form'>
 				<Typography variant='head' as='h1'>
 					Рассчитать доставку
@@ -108,7 +109,11 @@ const Calculation = () => {
 				<Button variant='black'>Найти</Button>
 			</Card>
 			<div className='flex flex-col gap-1 bg-primary-green rounded-3xl relative p-4'>
-				<Typography as='h4' variant='head' className='relative z-10 text-primary-foreground'>
+				<Typography
+					as='h4'
+					variant='head'
+					className='relative z-10 text-primary-foreground'
+				>
 					Бесплатная доставка
 				</Typography>
 				<Typography
@@ -155,7 +160,7 @@ const CitiesModal = ({
 			</div>
 			<ul className='flex flex-col mt-3'>
 				{cities.map(city => (
-					<li className='flex justify-between pt-4 pb-4'>
+					<li key={city} className='flex justify-between pt-4 pb-4'>
 						{city}{" "}
 						<ChevronRight width={24} height={24} className='text-input' />
 					</li>
