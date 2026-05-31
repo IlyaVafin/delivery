@@ -6,11 +6,13 @@ import { DropdownMenu } from "@/components/dropdown-menu"
 import DropdownTriggerWrapper from "@/components/dropdown-trigger-wrapper"
 import Input from "@/components/input"
 import Typography from "@/components/typography"
+import { api } from "@/shared/api/api"
 import { ArrowRight, ChevronRight, X } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const Calculation = () => {
 	const [showModalWhereTo, setShowModalWhereTo] = useState(false)
+	const [showModalSizes, setShowModalSizes] = useState(false)
 	return (
 		<div className='flex flex-col gap-2'>
 			<Card className='p-6 flex flex-col gap-6' rounded='sm' as='form'>
@@ -48,7 +50,7 @@ const Calculation = () => {
 					</div>
 					<div className='flex flex-col gap-1'>
 						<Typography as='span' variant='subbody'>
-							Размер посылки
+							Город назначения
 						</Typography>
 						<DropdownMenu>
 							<DropdownTriggerWrapper>
@@ -83,10 +85,10 @@ const Calculation = () => {
 					</div>
 					<div className='flex flex-col gap-1'>
 						<Typography as='span' variant='subbody'>
-							Город назначения
+							Размер посылки
 						</Typography>
 						<DropdownMenu>
-							<DropdownTriggerWrapper>
+							<DropdownTriggerWrapper onClick={() => setShowModalSizes(true)}>
 								<div className='flex items-center gap-2'>
 									<span>Не выбран</span>
 								</div>
@@ -125,6 +127,7 @@ const Calculation = () => {
 				</Typography>
 				<img className='absolute right-0 top-0 z-0' src={handhsake} alt='' />
 			</div>
+			<SizesModal setShow={setShowModalSizes} show={showModalSizes} />
 		</div>
 	)
 }
@@ -169,4 +172,121 @@ const CitiesModal = ({
 		</div>
 	)
 }
+
+interface Package {
+	id: string
+	name: string
+	length: number
+	width: number
+	height: number
+	weight: number
+}
+
+const sizesButtons = ["Примерные", "Точные"]
+const SizesModal = ({
+	show,
+	setShow,
+}: {
+	show: boolean
+	setShow: (val: boolean) => void
+}) => {
+	const [acitveSize, setAcitveSize] = useState("Примерные")
+	const [packages, setPackages] = useState<Package[]>([])
+	const [activePackage, setActivePackage] = useState(0)
+	useEffect(() => {
+		async function getPackages() {
+			const payload = await api.get<{ success: true; packages: Package[] }>(
+				"/delivery/package/types",
+			)
+			if (payload.success) {
+				setPackages(payload.data.packages)
+			}
+		}
+		getPackages()
+	}, [])
+
+	return (
+		<>
+			<div
+				onClick={() => setShow(false)}
+				className={`${show ? "block" : "hidden"} w-full h-full fixed bg-black opacity-50 top-0 left-0 z-10`}
+			></div>
+			<div
+				className={`${show ? "block animate-show" : "hidden animate-hide"} bg-white fixed bottom-0 left-0 pt-4 pb-4 pl-4 pr-4 w-full z-10 rounded-r-2xl rounded-l-2xl`}
+			>
+				<Typography className='mb-3 pt-3 pb-3 pr-2 pl-2' as='p' variant='head'>
+					Размер посылки
+				</Typography>
+				<div className='bg-muted p-1 rounded-full flex'>
+					{sizesButtons.map(btn => (
+						<button
+							key={btn}
+							onClick={() => setAcitveSize(btn)}
+							className={`pt-2 flex-1 pb-2 font-bold pr-[27.5px] pl-[27.5px] rounded-full ${acitveSize === btn ? "bg-white shadow-tab" : ""}`}
+						>
+							<Typography as='p' variant='subhead'>
+								{btn}
+							</Typography>
+						</button>
+					))}
+				</div>
+				{packages.length > 0 && acitveSize === "Примерные" && (
+					<div
+						style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+						className='flex flex-col gap-2 max-h-83 overflow-y-scroll pt-3'
+					>
+						{packages.map((p, i) => (
+							<Card
+								key={p.name}
+								className='flex p-4 justify-between h-22.5'
+								rounded='sm'
+								onClick={() => {
+									console.log(i)
+									setActivePackage(i)
+								}}
+							>
+								<div className='flex gap-4'>
+									<div className='w-12 h-12'></div>
+									<div className=''>
+										<Typography variant='head' as='p'>
+											{p.name}
+										</Typography>
+										<Typography variant='subbody' as='p'>
+											{p.length}x{p.width}x{p.height}
+										</Typography>
+									</div>
+								</div>
+								<span
+									className={`w-4 h-4 rounded-full ${activePackage === i ? "bg-primary" : "bg-secondary"}`}
+								></span>
+							</Card>
+						))}
+					</div>
+				)}
+				{acitveSize === "Точные" && <SizeExactlyForm />}
+			</div>
+		</>
+	)
+}
+const properties = ["Длина", "Ширина", "Высота", "Вес"]
+const SizeExactlyForm = () => {
+	return (
+		<div className='flex flex-col gap-4 pt-3'>
+			{properties.map(prop => (
+				<div className='flex flex-col gap-1'>
+					<label htmlFor={`input-${prop}`}>
+						<Typography as='p' variant='subbody'>
+							{prop}
+						</Typography>
+					</label>
+					<Input
+						placeholder={prop === "Вес" ? "кг" : "см"}
+						id={`input-${prop}`}
+					/>
+				</div>
+			))}
+		</div>
+	)
+}
+
 export default Calculation

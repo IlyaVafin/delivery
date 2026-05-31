@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router"
-import Calculation from "./pages/calculation"
 import Layout from "./components/layout/layout"
+import Calculation from "./pages/calculation"
 
 const App = () => {
 	return (

@@ -1,6 +1,16 @@
 import { cva } from "class-variance-authority"
 import { HTMLAttributes, ReactNode } from "react"
-type Tags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div"
+type Tags =
+	| "h1"
+	| "h2"
+	| "h3"
+	| "h4"
+	| "h5"
+	| "h6"
+	| "p"
+	| "span"
+	| "div"
+	| "label"
 
 interface TypographyProps extends HTMLAttributes<HTMLElement> {
 	children: ReactNode
@@ -15,7 +25,7 @@ const typography = cva("tracking-[0.5%] text-primary", {
 		variant: {
 			head: "text-2xl font-bold leading-8",
 			body: "text-[16px] leading-6 font-medium",
-			subhead: "text-[18px] leading-[26px] font-normal",
+			subhead: "text-[18px] leading-[26px]",
 			subbody: "text-[14px] font-medium leading-[22px]",
 			hint: "text-[12px] font-normal leading-4",
 		},
